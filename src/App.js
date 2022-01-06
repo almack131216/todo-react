@@ -75,9 +75,11 @@ function App() {
     if (!categories.length && !categoryId) return
     const activeCategory = categories.find((cat) => {
       return cat.id === categoryId
-    }).name
-    if (activeCategory) console.log("???", activeCategory)
-    setCategoryName(activeCategory)
+    })
+    if (activeCategory) {
+      console.log("???", activeCategory.name)
+      setCategoryName(activeCategory.name)
+    }
     // const newTodos = todos.filter((todo) => todo.categoryId === categoryId)
     // setTodos(newTodos)
   }
@@ -108,8 +110,34 @@ function App() {
   }
 
   function handleClearTodos() {
-    const newTodos = todos.filter((todo) => !todo.complete)
+    console.log("[handleClearTodos]", categoryId)
+    const newTodos = todos.filter(
+      (todo) =>
+        todo.categoryId !== categoryId ||
+        (todo.categoryId === categoryId && !todo.complete)
+    )
     setTodos(newTodos)
+  }
+
+  function handleDeleteList() {
+    console.log("[handleDeleteList]", categoryId)
+    const newCategories = categories.filter(
+      (category) => category.id !== categoryId
+    )
+    setCategories(newCategories)
+
+    const newTodos = todos.filter((todo) => todo.categoryId !== categoryId)
+    setTodos(newTodos)
+
+    if (newCategories.length) setCategoryId(newCategories[0].id)
+    setCategoryId("")
+    setCategoryName("")
+  }
+
+  function switchCategories(categoryId) {
+    console.log("[switchCategories]")
+    // if(categoryId === '')
+    // setCategoryId(category.id)
   }
 
   return (
@@ -121,6 +149,7 @@ function App() {
         <ul className='task-list' data-lists>
           <CategoryList
             categories={categories}
+            categoryId={categoryId}
             toggleCategory={toggleCategory}
           />
         </ul>
@@ -146,11 +175,11 @@ function App() {
       </div>
       {/* /all-tasks */}
 
-      {(todos && todos.length) || categoryId ? (
+      {categoryId ? (
         <div className='todo-list' data-list-display-container>
           <div className='todo-header'>
             <h2 className='list-title' data-list-title>
-              My Tasks | {categoryName}
+              {categoryName}
             </h2>
             <p className='task-count' data-list-count>
               {
@@ -197,7 +226,11 @@ function App() {
               >
                 Clear completed tasks
               </button>
-              <button className='btn delete' data-delete-list-button>
+              <button
+                className='btn delete'
+                data-delete-list-button
+                onClick={handleDeleteList}
+              >
                 Delete list
               </button>
             </div>

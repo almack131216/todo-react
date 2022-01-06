@@ -1,7 +1,11 @@
 import React from "react"
 import Category from "./Category"
 
-export default function CategoryList({ categories, toggleCategory }) {
+export default function CategoryList({
+  categories,
+  categoryId,
+  toggleCategory,
+}) {
   return (
     <div>
       {categories.map((cat) => {
@@ -9,6 +13,7 @@ export default function CategoryList({ categories, toggleCategory }) {
           <Category
             key={cat.id}
             category={cat}
+            categoryId={categoryId}
             toggleCategory={toggleCategory}
           />
         )
