@@ -1,23 +1,74 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useReducer } from "react"
 import TodoList from "./TodoList"
 import CategoryList from "./CategoryList"
 import { v4 as uuidv4 } from "uuid"
 import parse from "html-react-parser"
 import "./App.css"
+import { TodoReducer, ACTIONS } from "./context/TodoReducer"
 
 const LOCAL_STORAGE_KEY = "todoApp.todos"
 const LOCAL_STORAGE_KEY_CAT_ID = "todoApp.categoryId"
 const LOCAL_STORAGE_KEY_CATS = "todoApp.categories"
 
 function App() {
-  const [todos, setTodos] = useState([])
+  const initialState = {
+    todos: [],
+    categories: [],
+    categoryId: "",
+    categoryName: "",
+    editCategories: false
+  }
+
+  const [state, dispatch] = useReducer(TodoReducer, initialState)
+  const { todos, categories, categoryId, categoryName, editCategories } = { ...state }
+
+  const setCategoryId = (getCategoryId) => {
+    dispatch({
+      type: ACTIONS.SET_CATEGORY_ID,
+      payload: { categoryId: getCategoryId },
+    })
+  }
+
+  const setCategoryName = (getCategoryName) => {
+    console.log("[setCategoryName]", getCategoryName)
+
+    dispatch({
+      type: ACTIONS.SET_CATEGORY_NAME,
+      payload: { categoryName: getCategoryName },
+    })
+  }
+
+  const setCategories = (getCategories) => {
+    console.log(getCategories)
+    dispatch({
+      type: ACTIONS.SET_CATEGORIES,
+      payload: { categories: getCategories },
+    })
+  }
+
+  const setTodos = (getTodos) => {
+    console.log(getTodos);
+    dispatch({
+      type: ACTIONS.SET_TODOS,
+      payload: { todos: getTodos },
+    })
+  }
+
+  const addCategory = (e) => {
+    e.preventDefault()
+    const name = categoryNameRef.current.value
+    if (name === "") return
+
+    dispatch({
+      type: ACTIONS.ADD_CATEGORY,
+      payload: { name: name },
+    })
+    categoryNameRef.current.value = null
+  }
+
   const [tasksIncomplete, setTasksIncomplete] = useState(0)
   const [tasksComplete, setTasksComplete] = useState(0)
   const [tasksIncompleteText, setTasksIncompleteText] = useState("")
-  const [categories, setCategories] = useState([])
-  const [categoryId, setCategoryId] = useState("")
-  const [categoryName, setCategoryName] = useState("")
-  const [editCategories, setEditCategories] = useState(false)
 
   const todoNameRef = useRef()
   const categoryNameRef = useRef()
@@ -64,51 +115,12 @@ function App() {
     updateToDoList(categoryId)
   }, [categoryId])
 
-  function toggleTodo(id) {
-    console.log("[toggleToDo]")
-    const newTodos = [...todos]
-    const todo = newTodos.find((todo) => todo.id === id)
-    todo.complete = !todo.complete
-    setTodos(newTodos)
-    // updateTasksIncomplete()
-  }
-
-  function toggleCategory(category) {
-    console.log("[toggleCategory]")
-    setCategoryId(category.id)
-  }
-
   function toggleEditCategories() {
-    setEditCategories(!editCategories)
+    dispatch({
+      type: ACTIONS.SET_EDIT_CATEGORIES,
+      payload: { editCategories: !editCategories },
+    })
     console.log("[toggleEditCategories]", editCategories)
-  }
-
-  function categoryNameSave(thisCategoryId, newName){
-    console.log('[categoryNameSave]');
-    
-    const newCategories = [...categories]
-    const categoryCurrent = newCategories.find(cat => cat.id === thisCategoryId)
-    console.log('[categoryNameSave] current: ', categoryCurrent.name, newName);
-    newCategories.find(cat => cat.id === thisCategoryId).name = newName
-    console.log('[categoryNameSave] update: ', newCategories)
-    setCategories(newCategories)
-    if(thisCategoryId === categoryId) setCategoryName(newName)
-  }
-
-  function categoryDelete(thisCategoryId) {
-    console.log('[categoryDelete]', thisCategoryId);
-    // GET->FILTER->SET categories
-    const newCategories = categories.filter(
-      (category) => category.id !== thisCategoryId
-    )
-    setCategories(newCategories)
-    // GET->FILTER->SET todos
-    const newTodos = todos.filter((todo) => todo.categoryId !== thisCategoryId)
-    setTodos(newTodos)
-    // IF we still have other categories, then select first
-    // if (newCategories.length) setCategoryId(newCategories[0].id)
-    setCategoryId("")
-    setCategoryName("")
   }
 
   function updateToDoList(categoryId) {
@@ -120,10 +132,7 @@ function App() {
     if (activeCategory) {
       console.log("???", activeCategory.name)
       setCategoryName(activeCategory.name)
-      // updateTasksIncomplete()
     }
-    // const newTodos = todos.filter((todo) => todo.categoryId === categoryId)
-    // setTodos(newTodos)
     updateTasksIncomplete()
   }
 
@@ -153,45 +162,28 @@ function App() {
       )
   }
 
-  function handleAddTodo(e) {
+  function AddTodo(e) {
     e.preventDefault()
     const name = todoNameRef.current.value
     if (name === "") return
-    setTodos((prevTodos) => {
-      return [
-        ...prevTodos,
-        { categoryId: categoryId, id: uuidv4(), name: name, complete: false },
-      ]
+
+    dispatch({
+      type: ACTIONS.ADD_TODO,
+      payload: { categoryId: categoryId, name: name, complete: false },
     })
     todoNameRef.current.value = null
-    // updateTasksIncomplete()
   }
 
-  function handleAddCategory(e) {
+  function handleSubmit(e) {
     e.preventDefault()
-    const name = categoryNameRef.current.value
-    if (name === "") return
-    const newCategoryId = uuidv4()
-    setCategories((prevCategories) => {
-      return [...prevCategories, { id: newCategoryId, name: name }]
+  }
+
+  function ClearTodos() {
+    console.log("[ClearTodos]", categoryId)
+    dispatch({
+      type: ACTIONS.CLEAR_TODOS,
+      payload: { categoryId: categoryId }
     })
-    setCategoryId(newCategoryId)
-    categoryNameRef.current.value = null
-  }
-
-  function handleClearTodos() {
-    console.log("[handleClearTodos]", categoryId)
-    const newTodos = todos.filter(
-      (todo) =>
-        todo.categoryId !== categoryId ||
-        (todo.categoryId === categoryId && !todo.complete)
-    )
-    setTodos(newTodos)
-  }
-
-  function handleDeleteList() {
-    console.log("[handleDeleteList]", categoryId)
-    categoryDelete(categoryId)
   }
 
   return (
@@ -201,23 +193,25 @@ function App() {
         <h2 className='task-list-title'>
           My lists
           <button onClick={toggleEditCategories}>
-            {editCategories ? 'DONE' : 'EDIT'}
+            {editCategories ? "DONE" : "EDIT"}
           </button>
         </h2>
-        {/* dynamic population */}
-        <ul className='task-list'>
-          <CategoryList
-            categories={categories}
-            categoryId={categoryId}
-            toggleCategory={toggleCategory}
-            categoryNameSave={categoryNameSave}
-            categoryDelete={categoryDelete}
-            editCategories={editCategories}
-          />
-        </ul>
-        {/* /dynamic population */}
 
-        <form>
+        {categories.length && (
+          <>
+            {/* dynamic population */}
+            <ul className='task-list'>
+              <CategoryList
+                categories={categories}
+                categoryId={categoryId}
+                dispatch={dispatch}
+                editCategories={editCategories}
+              />
+            </ul>
+            {/* /dynamic population */}
+          </>
+        )}
+        <form onSubmit={handleSubmit}>
           <input
             type='text'
             className='inp-new list'
@@ -226,9 +220,10 @@ function App() {
             ref={categoryNameRef}
           />
           <button
+            type='submit'
             className='btn create'
             aria-label='create new list'
-            onClick={handleAddCategory}
+            onClick={addCategory}
           >
             +
           </button>
@@ -237,9 +232,13 @@ function App() {
       {/* /all-tasks */}
 
       {categoryId ? (
-        <div className={`todo-list ${editCategories ? 'is-editing-categories' : ''}`}>
+        <div
+          className={`todo-list ${
+            editCategories ? "is-editing-categories" : ""
+          }`}
+        >
           <div className='todo-header'>
-            <h2 className='list-title'>{categoryName}</h2>
+            <h2 className='list-title'>?-{categoryName}-?</h2>
             <p className='task-count'>{parse(tasksIncompleteText)}</p>
           </div>
           <div className='todo-body'>
@@ -247,7 +246,7 @@ function App() {
             <div className='tasks'>
               <TodoList
                 todos={todos.filter((todo) => todo.categoryId === categoryId)}
-                toggleTodo={toggleTodo}
+                dispatch={dispatch}
               />
             </div>
             {/* /dynamic population */}
@@ -263,7 +262,7 @@ function App() {
                 <button
                   className='btn create'
                   aria-label='create new task'
-                  onClick={handleAddTodo}
+                  onClick={AddTodo}
                 >
                   +
                 </button>
@@ -273,7 +272,7 @@ function App() {
               {
                 <button
                   className='btn delete'
-                  onClick={handleClearTodos}
+                  onClick={ClearTodos}
                   disabled={tasksComplete > 0 ? false : true}
                 >
                   Clear {tasksComplete} completed{" "}
@@ -281,7 +280,15 @@ function App() {
                 </button>
               }
 
-              <button className='btn delete' onClick={handleDeleteList}>
+              <button
+                className='btn delete'
+                onClick={() =>
+                  dispatch({
+                    type: ACTIONS.DELETE_CATEGORY,
+                    payload: { categoryId: categoryId },
+                  })
+                }
+              >
                 Delete list
               </button>
             </div>

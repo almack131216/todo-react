@@ -1,13 +1,17 @@
 import React, { useRef, useState } from "react"
+import { ACTIONS } from "./context/TodoReducer"
 
-export default function Category({ category, categoryId, toggleCategory, categoryNameSave, categoryDelete, editCategories }) {
+export default function Category({ category, categoryId, dispatch, editCategories }) {
   const [inputText, setInputText] = useState(category.name)
   const [disableBtnSave, setDisableBtnSave] = useState(false)
   const categoryNameRef = useRef()
 
   function handleCategoryClick() {
     console.log("[handleCategoryClick]")
-    toggleCategory(category)
+    dispatch({
+      type: ACTIONS.SELECT_CATEGORY,
+      payload: { categoryId: category.id, categoryName: category.name },
+    })
   }
 
   function canSave(){
@@ -23,12 +27,18 @@ export default function Category({ category, categoryId, toggleCategory, categor
   function handleCategoryNameSave(e){
     e.preventDefault()
     if (!canSave()) return
-    categoryNameSave(category.id, inputText)
+    dispatch({
+      type: ACTIONS.SAVE_CATEGORY_NAME,
+      payload: { id: category.id, name: inputText },
+    })
   }
 
   function handleCategoryDelete(e){
     e.preventDefault()
-    categoryDelete(category.id)
+    dispatch({
+      type: ACTIONS.DELETE_CATEGORY,
+      payload: { categoryId: category.id },
+    })
   }
 
   const isActiveClass = categoryId === category.id ? " active-list" : null

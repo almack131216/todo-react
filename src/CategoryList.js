@@ -4,10 +4,8 @@ import Category from "./Category"
 export default function CategoryList({
   categories,
   categoryId,
-  toggleCategory,
-  categoryNameSave,
-  editCategories,
-  categoryDelete
+  dispatch,
+  editCategories
 }) {
   return (
     <div>
@@ -18,9 +16,7 @@ export default function CategoryList({
             categories={categories}
             category={cat}
             categoryId={categoryId}
-            toggleCategory={toggleCategory}
-            categoryNameSave={categoryNameSave}
-            categoryDelete={categoryDelete}
+            dispatch={dispatch}
             editCategories={editCategories}
           />
         )
