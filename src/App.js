@@ -17,6 +17,8 @@ function App() {
   const [categories, setCategories] = useState([])
   const [categoryId, setCategoryId] = useState("")
   const [categoryName, setCategoryName] = useState("")
+  const [editCategories, setEditCategories] = useState(false)
+
   const todoNameRef = useRef()
   const categoryNameRef = useRef()
 
@@ -74,6 +76,39 @@ function App() {
   function toggleCategory(category) {
     console.log("[toggleCategory]")
     setCategoryId(category.id)
+  }
+
+  function toggleEditCategories() {
+    setEditCategories(!editCategories)
+    console.log("[toggleEditCategories]", editCategories)
+  }
+
+  function categoryNameSave(thisCategoryId, newName){
+    console.log('[categoryNameSave]');
+    
+    const newCategories = [...categories]
+    const categoryCurrent = newCategories.find(cat => cat.id === thisCategoryId)
+    console.log('[categoryNameSave] current: ', categoryCurrent.name, newName);
+    newCategories.find(cat => cat.id === thisCategoryId).name = newName
+    console.log('[categoryNameSave] update: ', newCategories)
+    setCategories(newCategories)
+    if(thisCategoryId === categoryId) setCategoryName(newName)
+  }
+
+  function categoryDelete(thisCategoryId) {
+    console.log('[categoryDelete]', thisCategoryId);
+    // GET->FILTER->SET categories
+    const newCategories = categories.filter(
+      (category) => category.id !== thisCategoryId
+    )
+    setCategories(newCategories)
+    // GET->FILTER->SET todos
+    const newTodos = todos.filter((todo) => todo.categoryId !== thisCategoryId)
+    setTodos(newTodos)
+    // IF we still have other categories, then select first
+    // if (newCategories.length) setCategoryId(newCategories[0].id)
+    setCategoryId("")
+    setCategoryName("")
   }
 
   function updateToDoList(categoryId) {
@@ -156,36 +191,28 @@ function App() {
 
   function handleDeleteList() {
     console.log("[handleDeleteList]", categoryId)
-    const newCategories = categories.filter(
-      (category) => category.id !== categoryId
-    )
-    setCategories(newCategories)
-
-    const newTodos = todos.filter((todo) => todo.categoryId !== categoryId)
-    setTodos(newTodos)
-
-    if (newCategories.length) setCategoryId(newCategories[0].id)
-    setCategoryId("")
-    setCategoryName("")
-  }
-
-  function switchCategories(categoryId) {
-    console.log("[switchCategories]")
-    // if(categoryId === '')
-    // setCategoryId(category.id)
+    categoryDelete(categoryId)
   }
 
   return (
     <>
       <h1 className='title'>Stuff I need to do</h1>
       <div className='all-tasks'>
-        <h2 className='task-list-title'>My lists</h2>
+        <h2 className='task-list-title'>
+          My lists
+          <button onClick={toggleEditCategories}>
+            {editCategories ? 'DONE' : 'EDIT'}
+          </button>
+        </h2>
         {/* dynamic population */}
         <ul className='task-list'>
           <CategoryList
             categories={categories}
             categoryId={categoryId}
             toggleCategory={toggleCategory}
+            categoryNameSave={categoryNameSave}
+            categoryDelete={categoryDelete}
+            editCategories={editCategories}
           />
         </ul>
         {/* /dynamic population */}
@@ -210,7 +237,7 @@ function App() {
       {/* /all-tasks */}
 
       {categoryId ? (
-        <div className='todo-list'>
+        <div className={`todo-list ${editCategories ? 'is-editing-categories' : ''}`}>
           <div className='todo-header'>
             <h2 className='list-title'>{categoryName}</h2>
             <p className='task-count'>{parse(tasksIncompleteText)}</p>

@@ -54,6 +54,14 @@ body #root {
   cursor: pointer;
 }
 
+.list-name span.text {
+    display:block;
+}
+
+.list-name span.input input {
+    width:100px;
+}
+
 .list-name:hover {
   opacity: 0.7;
 }
@@ -151,6 +159,10 @@ form {
   grid-area: active;
   background: var(--clr-light);
   color: var(--clr-dark);
+}
+
+.todo-list.is-editing-categories:not(:hover) {
+    /* opacity: 0.5; */
 }
 
 .todo-header {
