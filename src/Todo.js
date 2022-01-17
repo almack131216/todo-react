@@ -1,13 +1,11 @@
-import React from "react"
-import { ACTIONS } from "./context/TodoReducer"
+import {useContext} from "react"
+import TodoContext from "./context/TodoContext"
 
-export default function Todo({ todo, dispatch }) {
-  function ToggleTodo(id) {
+export default function Todo({ todo }) {
+  const {toggleTodo} = useContext(TodoContext)
+  function handleToggleTodo(id) {
     console.log("[ToggleTodo]")
-    dispatch({
-      type: ACTIONS.TOGGLE_TODO,
-      payload: {id}
-    })
+    toggleTodo(id)    
   }
 
   return (
@@ -16,7 +14,7 @@ export default function Todo({ todo, dispatch }) {
         type='checkbox'
         id={todo.id}
         checked={todo.complete}
-        onChange={() => ToggleTodo(todo.id)}
+        onChange={() => handleToggleTodo(todo.id)}
       />
       <label htmlFor={todo.id}>
         <span className='custom-checkbox'></span>

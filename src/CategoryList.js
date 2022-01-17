@@ -16,7 +16,6 @@ export default function CategoryList({
             categories={categories}
             category={cat}
             categoryId={categoryId}
-            dispatch={dispatch}
             editCategories={editCategories}
           />
         )

@@ -1,17 +1,18 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useContext } from "react"
 import { ACTIONS } from "./context/TodoReducer"
+import TodoContext from "./context/TodoContext"
 
-export default function Category({ category, categoryId, dispatch, editCategories }) {
+export default function Category({ category }) {
+
+  const {categoryId, dispatch, editCategories, setCategory} = useContext(TodoContext)
+
   const [inputText, setInputText] = useState(category.name)
   const [disableBtnSave, setDisableBtnSave] = useState(false)
   const categoryNameRef = useRef()
 
   function handleCategoryClick() {
     console.log("[handleCategoryClick]")
-    dispatch({
-      type: ACTIONS.SELECT_CATEGORY,
-      payload: { categoryId: category.id, categoryName: category.name },
-    })
+    setCategory(category)
   }
 
   function canSave(){

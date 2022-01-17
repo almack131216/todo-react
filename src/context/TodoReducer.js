@@ -13,9 +13,10 @@ const ACTIONS = {
   SET_EDIT_CATEGORIES: "set-edit-categories",
   CLEAR_TODOS: "clear-todos",
   TOGGLE_TODO: "toggle-todo",
+  UPDATE_STR_STATUS: "update-str-status"
 }
 
-const TodoReducer = (state, action) => {
+const todoReducer = (state, action) => {
   console.log("!!! [REDUCER] !!! ", action.type)
   switch (action.type) {
     case ACTIONS.TOGGLE_TODO:
@@ -36,6 +37,8 @@ const TodoReducer = (state, action) => {
             todo.categoryId !== action.payload.categoryId ||
             (todo.categoryId === action.payload.categoryId && !todo.complete)
         ),
+        todosComplete: 0,
+        todosIncomplete: 0
       }
 
     case ACTIONS.SET_EDIT_CATEGORIES:
@@ -51,6 +54,14 @@ const TodoReducer = (state, action) => {
         todos: [...state.todos, addTodo(newTodoId, action.payload)],
       }
 
+    case ACTIONS.UPDATE_STR_STATUS:
+      return {
+        ...state,
+        todosComplete: action.payload.complete,
+        todosIncomplete: action.payload.incomplete,
+        strTodoStatus: action.payload.str
+      }
+
     case ACTIONS.SET_CATEGORIES:
       return { ...state, categories: action.payload.categories }
 
@@ -58,7 +69,7 @@ const TodoReducer = (state, action) => {
       return { ...state, categoryId: action.payload.categoryId }
 
     case ACTIONS.SET_CATEGORY_NAME:
-      return { ...state, categoryName: action.payload.categoryName }
+      return { ...state, categoryId: action.payload.id, categoryName: action.payload.name }
 
     case ACTIONS.ADD_CATEGORY:
       const newCategoryId = uuidv4()
@@ -94,10 +105,10 @@ const TodoReducer = (state, action) => {
       return {
         ...state,
         todos: state.todos.filter(
-          (todo) => todo.categoryId !== action.payload.categoryId
+          (todo) => todo.categoryId !== action.payload
         ),
         categories: state.categories.filter(
-          (category) => category.id !== action.payload.categoryId
+          (category) => category.id !== action.payload
         ),
         categoryId: "",
         categoryName: "",
@@ -130,4 +141,4 @@ function addTodo(newTodoId, getPayload) {
   }
 }
 
-export { ACTIONS, TodoReducer, MixStates }
+export { ACTIONS, todoReducer, MixStates }
