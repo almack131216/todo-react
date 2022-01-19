@@ -1,5 +1,6 @@
 import { createContext, useEffect, useReducer } from "react"
 import { ACTIONS, todoReducer } from "./TodoReducer"
+import { getStatusArr } from "./TodoActions"
 
 const TodoContext = createContext()
 
@@ -12,30 +13,19 @@ export const TodoProvider = ({ children }) => {
     todos: [],
     categories: [],
     categoryId: "",
-    categoryName: "",
     editCategories: false,
-    todosIncomplete: 0,
-    todosComplete: 0,
-    strTodoStatus: "",
   }
 
   const [state, dispatch] = useReducer(todoReducer, initialState)
 
-  const {
-    todos,
-    categories,
-    categoryId,
-    todosIncomplete,
-    todosComplete,
-    strTodoStatus,
-  } = { ...state }
+  const { todos, categories, categoryId } = { ...state }
 
   useEffect(() => {
     console.log("----------------")
     const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
     if (storedTodos) {
       setTodos(storedTodos)
-      console.log("[useEffect] todos: ", todos)
+      console.log("[CX]---[useEffect] todos: ", todos)
     }
 
     const storedCategories = JSON.parse(
@@ -43,7 +33,7 @@ export const TodoProvider = ({ children }) => {
     )
     if (storedCategories) {
       setCategories(storedCategories)
-      console.log("[useEffect] categories: ", categories)
+      console.log("[CX]---[useEffect] categories: ", categories)
     }
 
     const storedCategoryId = JSON.parse(
@@ -51,24 +41,24 @@ export const TodoProvider = ({ children }) => {
     )
     if (storedCategoryId) {
       setCategoryId(storedCategoryId)
-      console.log("[useEffect] categoryId: ", categoryId)
+      console.log("[CX]---[useEffect] categoryId: ", categoryId)
     }
   }, [])
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))
-    console.log("[useEffect][setItem][todos]", todos)
+    console.log("[CX]---[useEffect][setItem][todos]", todos)
     updateTodosIncomplete()
   }, [todos])
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY_CATS, JSON.stringify(categories))
-    console.log("[useEffect][setItem][categories]", categories)
+    console.log("[CX]---[useEffect][setItem][categories]", categories)
   }, [categories])
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY_CAT_ID, JSON.stringify(categoryId))
-    console.log("[useEffect][setItem][categoryId]", categoryId)
+    console.log("[CX]---[useEffect][setItem][categoryId]", categoryId)
     updateToDoList(categoryId)
   }, [categoryId])
 
@@ -89,7 +79,7 @@ export const TodoProvider = ({ children }) => {
   }
 
   const setCategoryName = (getCategoryArr) => {
-    console.log("[setCategoryName]", getCategoryArr)
+    console.log("[CX]---[setCategoryName]", getCategoryArr)
 
     dispatch({
       type: ACTIONS.SET_CATEGORY_NAME,
@@ -106,91 +96,43 @@ export const TodoProvider = ({ children }) => {
   }
 
   const setTodos = (getTodos) => {
-    console.log(getTodos)
+    console.log('[CX]---[setTodos]', getTodos)
     dispatch({
       type: ACTIONS.SET_TODOS,
-      payload: { todos: getTodos },
+      payload: getTodos,
     })
   }
 
-  //   const setTasksComplete = (getTasks) => {
-  //     console.log(getTasks);
-  //     dispatch({
-  //       type: ACTIONS.SET_TASKS_COMPLETE,
-  //       payload: getTasks,
-  //     })
-  //   }
-
-  //   const setTasksIncomplete = (getTasks) => {
-  //     console.log(getTasks);
-  //     dispatch({
-  //       type: ACTIONS.SET_TASKS_INCOMPLETE,
-  //       payload: getTasks,
-  //     })
-  //   }
-
   function updateToDoList(categoryId) {
-    console.log("[updateToDoList] categoryId: ", categoryId, categories)
+    console.log("[CX]---[updateToDoList] categoryId: ", categoryId, categories)
     if (!categories.length && !categoryId) return
     const activeCategory = categories.find((cat) => {
       return cat.id === categoryId
     })
-    if (activeCategory) {
-      console.log("???", activeCategory)
-      setCategoryName(activeCategory)
-    }
+    if (activeCategory) setCategoryName(activeCategory)
     updateTodosIncomplete()
   }
 
-  function deleteCategory(id) {
-    dispatch({
-      type: ACTIONS.DELETE_CATEGORY,
-      payload: id,
-    })
-    // const newTodos = todos.filter((todo) => todo.categoryId !== thisCategoryId)
-    // setTodos(newTodos)
-  }
-
   function updateTodosIncomplete() {
-    let str = ""
-    const todosComplete = todos.filter(
-      (todo) => todo.complete && todo.categoryId === categoryId
-    ).length
-    // setTasksComplete(todosComplete)
-    const todosIncomplete = todos.filter(
-      (todo) => !todo.complete && todo.categoryId === categoryId
-    ).length
-    // setTasksIncomplete(todosIncomplete)
-
-    if (todosIncomplete >= 1 && todosComplete === 0)
-      str = `<strong>${todosIncomplete}</strong> ${
-        todosIncomplete === 1 ? "task" : "tasks"
-      }`
-    if (todosIncomplete === 0 && todosComplete >= 1) str = `up to date`
-    if (todosIncomplete >= 1 && todosComplete >= 1)
-      str = `<strong>${todosComplete} / ${
-        todosIncomplete + todosComplete
-      }</strong> done`
+    console.log("[CX]---[updateTodosIncomplete]")
+    const statusArr = getStatusArr({ todos, categoryId })
 
     dispatch({
       type: ACTIONS.UPDATE_STR_STATUS,
       payload: {
-        complete: todosComplete,
-        incomplete: todosIncomplete,
-        str,
+        complete: statusArr.complete,
+        incomplete: statusArr.incomplete,
+        str: statusArr.str,
       },
     })
   }
-
-  
-
 
   return (
     <TodoContext.Provider
       value={{
         ...state,
         dispatch,
-        ACTIONS
+        ACTIONS,
       }}
     >
       {children}

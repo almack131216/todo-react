@@ -13,7 +13,7 @@ const ACTIONS = {
   SET_EDIT_CATEGORIES: "set-edit-categories",
   CLEAR_TODOS: "clear-todos",
   TOGGLE_TODO: "toggle-todo",
-  UPDATE_STR_STATUS: "update-str-status"
+  UPDATE_STR_STATUS: "update-str-status",
 }
 
 const todoReducer = (state, action) => {
@@ -38,25 +38,28 @@ const todoReducer = (state, action) => {
             (todo.categoryId === action.payload && !todo.complete)
         ),
         todosComplete: 0,
-        todosIncomplete: 0
+        todosIncomplete: 0,
       }
 
     case ACTIONS.SET_EDIT_CATEGORIES:
       return { ...state, editCategories: action.payload.editCategories }
 
     case ACTIONS.SET_TODOS:
-      return { ...state, todos: action.payload.todos }
+      return { ...state, todos: action.payload }
 
     case ACTIONS.ADD_TODO:
       const newTodoId = uuidv4()
       return {
         ...state,
-        todos: [...state.todos, {
-          categoryId: action.payload.categoryId,
-          id: newTodoId,
-          name: action.payload.name,
-          complete: false,
-        }],
+        todos: [
+          ...state.todos,
+          {
+            categoryId: action.payload.categoryId,
+            id: newTodoId,
+            name: action.payload.name,
+            complete: false,
+          },
+        ],
       }
 
     case ACTIONS.UPDATE_STR_STATUS:
@@ -64,7 +67,7 @@ const todoReducer = (state, action) => {
         ...state,
         todosComplete: action.payload.complete,
         todosIncomplete: action.payload.incomplete,
-        strTodoStatus: action.payload.str
+        strTodoStatus: action.payload.str,
       }
 
     case ACTIONS.SET_CATEGORIES:
@@ -74,7 +77,11 @@ const todoReducer = (state, action) => {
       return { ...state, categoryId: action.payload }
 
     case ACTIONS.SET_CATEGORY_NAME:
-      return { ...state, categoryId: action.payload.id, categoryName: action.payload.name }
+      return {
+        ...state,
+        categoryId: action.payload.id,
+        categoryName: action.payload.name,
+      }
 
     case ACTIONS.ADD_CATEGORY:
       const newCategoryId = uuidv4()
@@ -82,7 +89,7 @@ const todoReducer = (state, action) => {
         ...state,
         categories: [
           ...state.categories,
-          {id: newCategoryId, name: action.payload},
+          { id: newCategoryId, name: action.payload },
         ],
         categoryId: newCategoryId,
         categoryName: action.payload.name,
@@ -109,9 +116,7 @@ const todoReducer = (state, action) => {
     case ACTIONS.DELETE_CATEGORY:
       return {
         ...state,
-        todos: state.todos.filter(
-          (todo) => todo.categoryId !== action.payload
-        ),
+        todos: state.todos.filter((todo) => todo.categoryId !== action.payload),
         categories: state.categories.filter(
           (category) => category.id !== action.payload
         ),

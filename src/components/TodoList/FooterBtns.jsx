@@ -5,21 +5,20 @@ function TodoListFooterBtns() {
   const { todosComplete, categoryId, dispatch, ACTIONS } =
     useContext(TodoContext)
 
-    const clearTodos = (getCategoryId) => {
-      console.log("[clearTodos]", getCategoryId)
-      dispatch({
-        type: ACTIONS.CLEAR_TODOS,
-        payload: getCategoryId,
-      })
-    }
+  const clearTodos = (getCategoryId) => {
+    console.log("[clearTodos]", getCategoryId)
+    dispatch({
+      type: ACTIONS.CLEAR_TODOS,
+      payload: getCategoryId,
+    })
+  }
 
-    const deleteCategory = (id) => {
-      dispatch({
-        type: ACTIONS.DELETE_CATEGORY,
-        payload: id,
-      })
-    }
-    
+  const deleteCategory = (id) => {
+    dispatch({
+      type: ACTIONS.DELETE_CATEGORY,
+      payload: id,
+    })
+  }
 
   return (
     <div className='delete-stuff'>
@@ -34,10 +33,7 @@ function TodoListFooterBtns() {
         </button>
       }
 
-      <button
-        className='btn delete'
-        onClick={() => deleteCategory(categoryId)}
-      >
+      <button className='btn delete' onClick={() => deleteCategory(categoryId)}>
         Delete list
       </button>
     </div>

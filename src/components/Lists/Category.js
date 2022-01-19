@@ -40,7 +40,7 @@ export default function Category({ category }) {
     e.preventDefault()
     dispatch({
       type: ACTIONS.DELETE_CATEGORY,
-      payload: { categoryId: category.id },
+      payload: category.id,
     })
   }
 
