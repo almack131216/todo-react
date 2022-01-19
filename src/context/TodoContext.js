@@ -24,7 +24,7 @@ export const TodoProvider = ({ children }) => {
     console.log("----------------")
     const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
     if (storedTodos) {
-      setTodos(storedTodos)
+      cxSetTodos(storedTodos)
       console.log("[CX]---[useEffect] todos: ", todos)
     }
 
@@ -96,8 +96,8 @@ export const TodoProvider = ({ children }) => {
     })
   }
 
-  const setTodos = (getTodos) => {
-    console.log("[CX]---[setTodos]", getTodos)
+  const cxSetTodos = (getTodos) => {
+    console.log("[CX]---[cxSetTodos]", getTodos)
     dispatch({
       type: ACTIONS.SET_TODOS,
       payload: getTodos,
@@ -134,6 +134,7 @@ export const TodoProvider = ({ children }) => {
         ...state,
         dispatch,
         ACTIONS,
+        cxSetTodos,
         cxDeleteCategory,
       }}
     >
