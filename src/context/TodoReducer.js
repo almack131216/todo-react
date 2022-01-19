@@ -42,7 +42,7 @@ const todoReducer = (state, action) => {
       }
 
     case ACTIONS.SET_EDIT_CATEGORIES:
-      return { ...state, editCategories: action.payload.editCategories }
+      return { ...state, editCategories: action.payload }
 
     case ACTIONS.SET_TODOS:
       return { ...state, todos: action.payload }
@@ -105,7 +105,7 @@ const todoReducer = (state, action) => {
     case ACTIONS.SAVE_CATEGORY_NAME:
       return {
         ...state,
-        categoryName: action.payload.name,
+        categoryName: action.payload.id === state.categoryId ? action.payload.name : state.categoryName,
         categories: state.categories.map((cat) =>
           cat.id === action.payload.id
             ? { ...cat, name: action.payload.name }

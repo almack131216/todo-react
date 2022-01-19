@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import TodoList from "../../TodoList"
+import TodoList from "./TodoList"
 import TodoListHeader from "./Header"
 import TodoListForm from "./Form"
 import TodoListFooterBtns from "./FooterBtns"

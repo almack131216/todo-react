@@ -2,15 +2,15 @@ import React, { useRef, useState, useContext } from "react"
 import TodoContext from "../../context/TodoContext"
 
 export default function Category({ category }) {
-  const { categoryId, editCategories, dispatch, ACTIONS } =
+  const { categoryId, editCategories, dispatch, ACTIONS, cxDeleteCategory } =
     useContext(TodoContext)
 
   const [inputText, setInputText] = useState(category.name)
   const [disableBtnSave, setDisableBtnSave] = useState(false)
   const categoryNameRef = useRef()
 
-  function handleCategoryClick() {
-    console.log("[handleCategoryClick]")
+  function selectCategory() {
+    console.log("[selectCategory]")
     dispatch({
       type: ACTIONS.SELECT_CATEGORY,
       payload: { categoryId: category.id, categoryName: category.name },
@@ -27,7 +27,7 @@ export default function Category({ category }) {
     return true
   }
 
-  function handleCategoryNameSave(e) {
+  function categoryNameSave(e) {
     e.preventDefault()
     if (!canSave()) return
     dispatch({
@@ -38,10 +38,7 @@ export default function Category({ category }) {
 
   function handleCategoryDelete(e) {
     e.preventDefault()
-    dispatch({
-      type: ACTIONS.DELETE_CATEGORY,
-      payload: category.id,
-    })
+    cxDeleteCategory(category.id)
   }
 
   const isActiveClass = categoryId === category.id ? " active-list" : null
@@ -57,18 +54,21 @@ export default function Category({ category }) {
             onChange={(e) => setInputText(e.currentTarget.value)}
           />
           <button
-            onClick={handleCategoryNameSave}
+            onClick={categoryNameSave}
             disabled={
               inputText === "" || inputText === category.name ? true : false
             }
           >
             save
           </button>
-          <button onClick={handleCategoryClick}>show</button>
+          <button onClick={selectCategory}
+          disabled={
+            category.id === categoryId ? true : false
+          }>show</button>
           <button onClick={handleCategoryDelete}>X</button>
         </span>
       ) : (
-        <span className='text' onClick={handleCategoryClick}>
+        <span className='text' onClick={selectCategory}>
           {category.name}
         </span>
       )}

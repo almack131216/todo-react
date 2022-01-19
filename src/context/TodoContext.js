@@ -17,9 +17,9 @@ export const TodoProvider = ({ children }) => {
   }
 
   const [state, dispatch] = useReducer(todoReducer, initialState)
-
   const { todos, categories, categoryId } = { ...state }
 
+  // useEffect hooks
   useEffect(() => {
     console.log("----------------")
     const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
@@ -48,7 +48,7 @@ export const TodoProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))
     console.log("[CX]---[useEffect][setItem][todos]", todos)
-    updateTodosIncomplete()
+    updateTodosStatus()
   }, [todos])
 
   useEffect(() => {
@@ -61,15 +61,16 @@ export const TodoProvider = ({ children }) => {
     console.log("[CX]---[useEffect][setItem][categoryId]", categoryId)
     updateToDoList(categoryId)
   }, [categoryId])
+  // /useEffect hooks
 
-  //   2do
-  //   function toggleEditCategories() {
-  //     dispatch({
-  //       type: ACTIONS.SET_EDIT_CATEGORIES,
-  //       payload: { editCategories: !editCategories },
-  //     })
-  //     console.log("[toggleEditCategories]", editCategories)
-  //   }
+  const cxDeleteCategory = (id) => {
+    if (window.confirm(`Are you sure you want to delete category?`)) {
+      dispatch({
+        type: ACTIONS.DELETE_CATEGORY,
+        payload: id,
+      })
+    }
+  }
 
   const setCategoryId = (getCategoryId) => {
     dispatch({
@@ -96,7 +97,7 @@ export const TodoProvider = ({ children }) => {
   }
 
   const setTodos = (getTodos) => {
-    console.log('[CX]---[setTodos]', getTodos)
+    console.log("[CX]---[setTodos]", getTodos)
     dispatch({
       type: ACTIONS.SET_TODOS,
       payload: getTodos,
@@ -110,11 +111,11 @@ export const TodoProvider = ({ children }) => {
       return cat.id === categoryId
     })
     if (activeCategory) setCategoryName(activeCategory)
-    updateTodosIncomplete()
+    updateTodosStatus()
   }
 
-  function updateTodosIncomplete() {
-    console.log("[CX]---[updateTodosIncomplete]")
+  function updateTodosStatus() {
+    console.log("[CX]---[updateTodosStatus]")
     const statusArr = getStatusArr({ todos, categoryId })
 
     dispatch({
@@ -133,6 +134,7 @@ export const TodoProvider = ({ children }) => {
         ...state,
         dispatch,
         ACTIONS,
+        cxDeleteCategory,
       }}
     >
       {children}

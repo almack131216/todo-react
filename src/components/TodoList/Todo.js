@@ -1,16 +1,16 @@
-import {useContext} from "react"
-import TodoContext from "./context/TodoContext"
+import { useContext } from "react"
+import TodoContext from "../../context/TodoContext"
 
 export default function Todo({ todo }) {
-  const {dispatch, ACTIONS} = useContext(TodoContext)
+  const { dispatch, ACTIONS } = useContext(TodoContext)
+
   function toggleTodo(id) {
     console.log("[ToggleTodo]")
 
-      dispatch({
-        type: ACTIONS.TOGGLE_TODO,
-        payload: id
-      })
-    
+    dispatch({
+      type: ACTIONS.TOGGLE_TODO,
+      payload: id,
+    })
   }
 
   return (
@@ -18,7 +18,7 @@ export default function Todo({ todo }) {
       <input
         type='checkbox'
         id={todo.id}
-        checked={todo.complete}
+        checked={todo.complete}        
         onChange={() => toggleTodo(todo.id)}
       />
       <label htmlFor={todo.id}>

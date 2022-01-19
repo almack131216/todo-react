@@ -2,7 +2,7 @@ import { useContext } from "react"
 import TodoContext from "../../context/TodoContext"
 
 function TodoListFooterBtns() {
-  const { todosComplete, categoryId, dispatch, ACTIONS } =
+  const { todosComplete, categoryId, dispatch, ACTIONS, cxDeleteCategory } =
     useContext(TodoContext)
 
   const clearTodos = (getCategoryId) => {
@@ -14,10 +14,7 @@ function TodoListFooterBtns() {
   }
 
   const deleteCategory = (id) => {
-    dispatch({
-      type: ACTIONS.DELETE_CATEGORY,
-      payload: id,
-    })
+    cxDeleteCategory(id)
   }
 
   return (

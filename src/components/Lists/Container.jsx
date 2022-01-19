@@ -6,13 +6,20 @@ import Form from "./Form"
 function ListsContainer() {
 
   const {
-    categoryId,
     categories,
     editCategories,
-    toggleEditCategories,
     dispatch,
     ACTIONS
   } = useContext(TodoContext)
+
+    //   2do
+    const toggleEditCategories = () => {
+      dispatch({
+        type: ACTIONS.SET_EDIT_CATEGORIES,
+        payload: !editCategories,
+      })
+      console.log("[toggleEditCategories]", editCategories)
+    }
 
   return (
     <div className='all-tasks'>
