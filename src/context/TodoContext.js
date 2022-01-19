@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useReducer } from "react"
+import { createContext, useEffect, useReducer } from "react"
 import { ACTIONS, todoReducer } from "./TodoReducer"
 
 const TodoContext = createContext()
@@ -25,8 +25,6 @@ export const TodoProvider = ({ children }) => {
     todos,
     categories,
     categoryId,
-    categoryName,
-    editCategories,
     todosIncomplete,
     todosComplete,
     strTodoStatus,
@@ -195,11 +193,11 @@ export const TodoProvider = ({ children }) => {
     })
   }
 
-  function ClearTodos() {
-    console.log("[ClearTodos]", categoryId)
+  function clearTodos(getCategoryId) {
+    console.log("[clearTodos]", getCategoryId)
     dispatch({
       type: ACTIONS.CLEAR_TODOS,
-      payload: { categoryId: categoryId },
+      payload: { categoryId: getCategoryId },
     })
   }
 
@@ -227,19 +225,12 @@ export const TodoProvider = ({ children }) => {
   return (
     <TodoContext.Provider
       value={{
-        todos: state.todos,
+        ...state,
+        setCategories,
         setTodos,
         addTodo,
         toggleTodo,
-        todosIncomplete,
-        todosComplete,
-        strTodoStatus,
-        categories: state.categories,
-        setCategories,
-        categoryId: state.categoryId,
-        categoryName: state.categoryName,
-        editCategories: state.editCategories,
-        ClearTodos,
+        clearTodos,
         dispatch,
         addCategory,
         setCategory,

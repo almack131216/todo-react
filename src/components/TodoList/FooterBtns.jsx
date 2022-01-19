@@ -5,16 +5,12 @@ function TodoListFooterBtns() {
   const { clearTodos, deleteCategory, todosComplete, categoryId } =
     useContext(TodoContext)
 
-  function handleDeleteCategory(categoryId) {
-    deleteCategory(categoryId)
-  }
-
   return (
     <div className='delete-stuff'>
       {
         <button
           className='btn delete'
-          onClick={clearTodos}
+          onClick={() => clearTodos(categoryId)}
           disabled={todosComplete > 0 ? false : true}
         >
           Clear {todosComplete} completed{" "}
@@ -24,7 +20,7 @@ function TodoListFooterBtns() {
 
       <button
         className='btn delete'
-        onClick={() => handleDeleteCategory(categoryId)}
+        onClick={() => deleteCategory(categoryId)}
       >
         Delete list
       </button>

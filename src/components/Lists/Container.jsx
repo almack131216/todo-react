@@ -1,9 +1,9 @@
-import { useContext, useRef } from "react"
+import { useContext } from "react"
 import TodoContext from "../../context/TodoContext"
-import CategoryList from "../../CategoryList"
+import CategoryList from "./CategoryList"
+import Form from "./Form"
 
 function ListsContainer() {
-  const categoryNameRef = useRef()
 
   const {
     categoryId,
@@ -12,18 +12,6 @@ function ListsContainer() {
     toggleEditCategories,
     addCategory
   } = useContext(TodoContext)
-
-  function handleSubmit(e) {
-    e.preventDefault()
-  }
-
-  const handleAddCategory = (e) => {
-    e.preventDefault()
-    const name = categoryNameRef.current.value
-    if (name === "") return
-    addCategory(name)
-    categoryNameRef.current.value = null
-  }
 
   return (
     <div className='all-tasks'>
@@ -47,24 +35,8 @@ function ListsContainer() {
           {/* /dynamic population */}
         </>
       ) : null}
-      
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          className='inp-new list'
-          placeholder='new list name'
-          aria-label='new list name'
-          ref={categoryNameRef}
-        />
-        <button
-          type='submit'
-          className='btn create'
-          aria-label='create new list'
-          onClick={handleAddCategory}
-        >
-          +
-        </button>
-      </form>
+
+      <Form addCategory={addCategory} />
     </div>
   )
 }

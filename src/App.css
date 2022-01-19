@@ -157,7 +157,7 @@ form {
   --spacer: 2rem;
 
   grid-area: active;
-  background: var(--clr-light);
+  background: none;
   color: var(--clr-dark);
 }
 
@@ -183,13 +183,14 @@ form {
 }
 
 .todo-body {
+  background: var(--clr-light);
   padding: var(--spacer);
   position: relative;
 }
 
 .tasks {
   /* 2do - better UI when list is empty (delete btns) */
-  min-height:35px;
+  /* min-height:35px; */
 }
 
 .new-task-creator .create {
