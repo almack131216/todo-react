@@ -23,7 +23,7 @@ const todoReducer = (state, action) => {
       return {
         ...state,
         todos: state.todos.map((todo) =>
-          todo.id === action.payload.id
+          todo.id === action.payload
             ? { ...todo, complete: !todo.complete }
             : todo
         ),
@@ -34,8 +34,8 @@ const todoReducer = (state, action) => {
         ...state,
         todos: state.todos.filter(
           (todo) =>
-            todo.categoryId !== action.payload.categoryId ||
-            (todo.categoryId === action.payload.categoryId && !todo.complete)
+            todo.categoryId !== action.payload ||
+            (todo.categoryId === action.payload && !todo.complete)
         ),
         todosComplete: 0,
         todosIncomplete: 0
@@ -51,7 +51,12 @@ const todoReducer = (state, action) => {
       const newTodoId = uuidv4()
       return {
         ...state,
-        todos: [...state.todos, addTodo(newTodoId, action.payload)],
+        todos: [...state.todos, {
+          categoryId: action.payload.categoryId,
+          id: newTodoId,
+          name: action.payload.name,
+          complete: false,
+        }],
       }
 
     case ACTIONS.UPDATE_STR_STATUS:
@@ -66,7 +71,7 @@ const todoReducer = (state, action) => {
       return { ...state, categories: action.payload.categories }
 
     case ACTIONS.SET_CATEGORY_ID:
-      return { ...state, categoryId: action.payload.categoryId }
+      return { ...state, categoryId: action.payload }
 
     case ACTIONS.SET_CATEGORY_NAME:
       return { ...state, categoryId: action.payload.id, categoryName: action.payload.name }
@@ -77,7 +82,7 @@ const todoReducer = (state, action) => {
         ...state,
         categories: [
           ...state.categories,
-          addCategory(newCategoryId, action.payload),
+          {id: newCategoryId, name: action.payload},
         ],
         categoryId: newCategoryId,
         categoryName: action.payload.name,
@@ -119,26 +124,4 @@ const todoReducer = (state, action) => {
   }
 }
 
-const MixStates = (state) => {
-  return { ...state.categoryId }
-}
-
-// function deleteCategory(){
-//     const newTodos = todos.filter((todo) => todo.categoryId !== thisCategoryId)
-//     setTodos(newTodos)
-// }
-
-function addCategory(newCategoryId, { name }) {
-  return { id: newCategoryId, name: name }
-}
-
-function addTodo(newTodoId, getPayload) {
-  return {
-    categoryId: getPayload.categoryId,
-    id: newTodoId,
-    name: getPayload.name,
-    complete: false,
-  }
-}
-
-export { ACTIONS, todoReducer, MixStates }
+export { ACTIONS, todoReducer }

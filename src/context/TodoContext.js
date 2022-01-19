@@ -84,7 +84,7 @@ export const TodoProvider = ({ children }) => {
   const setCategoryId = (getCategoryId) => {
     dispatch({
       type: ACTIONS.SET_CATEGORY_ID,
-      payload: { categoryId: getCategoryId },
+      payload: getCategoryId,
     })
   }
 
@@ -182,59 +182,15 @@ export const TodoProvider = ({ children }) => {
     })
   }
 
-  const addTodo = (newTodo) => {
-    dispatch({
-      type: ACTIONS.ADD_TODO,
-      payload: {
-        categoryId: newTodo.categoryId,
-        name: newTodo.name,
-        complete: false,
-      },
-    })
-  }
+  
 
-  function clearTodos(getCategoryId) {
-    console.log("[clearTodos]", getCategoryId)
-    dispatch({
-      type: ACTIONS.CLEAR_TODOS,
-      payload: { categoryId: getCategoryId },
-    })
-  }
-
-  const addCategory = (getName) => {
-    dispatch({
-      type: ACTIONS.ADD_CATEGORY,
-      payload: { name: getName },
-    })
-  }
-
-  const setCategory = (getCategory) => {
-    dispatch({
-      type: ACTIONS.SELECT_CATEGORY,
-      payload: { categoryId: getCategory.id, categoryName: getCategory.name },
-    })
-  }
-
-  const toggleTodo = (getId) => {
-    dispatch({
-      type: ACTIONS.TOGGLE_TODO,
-      payload: { id: getId },
-    })
-  }
 
   return (
     <TodoContext.Provider
       value={{
         ...state,
-        setCategories,
-        setTodos,
-        addTodo,
-        toggleTodo,
-        clearTodos,
         dispatch,
-        addCategory,
-        setCategory,
-        deleteCategory,
+        ACTIONS
       }}
     >
       {children}

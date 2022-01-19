@@ -1,22 +1,25 @@
 import { useRef } from "react"
 
-function Form({addCategory}) {
+function Form({dispatch, ACTIONS}) {
   const categoryNameRef = useRef()
 
-  function handleSubmit(e) {
+  function formSubmit(e) {
     e.preventDefault()
   }
 
-  const handleAddCategory = (e) => {
+  const addCategory = (e) => {
     e.preventDefault()
     const name = categoryNameRef.current.value
     if (name === "") return
-    addCategory(name)
+    dispatch({
+      type: ACTIONS.ADD_CATEGORY,
+      payload: name
+    })
     categoryNameRef.current.value = null
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={formSubmit}>
       <input
         type='text'
         className='inp-new list'
@@ -28,7 +31,7 @@ function Form({addCategory}) {
         type='submit'
         className='btn create'
         aria-label='create new list'
-        onClick={handleAddCategory}
+        onClick={addCategory}
       >
         +
       </button>

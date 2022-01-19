@@ -2,11 +2,11 @@ import { useRef, useContext } from "react"
 import TodoContext from "../../context/TodoContext"
 
 function TodoListForm() {
-  const { addTodo } = useContext(TodoContext)
+  const { dispatch, ACTIONS } = useContext(TodoContext)
   const todoNameRef = useRef()
   const { categoryId } = useContext(TodoContext)
 
-  function handleAddTodo(e) {
+  function addTodo(e) {
     e.preventDefault()
     const name = todoNameRef.current.value
     if (name === "") return
@@ -14,7 +14,16 @@ function TodoListForm() {
       name: name,
       categoryId: categoryId,
     }
-    addTodo(newTodo)
+
+    dispatch({
+      type: ACTIONS.ADD_TODO,
+      payload: {
+        categoryId: newTodo.categoryId,
+        name: newTodo.name,
+        complete: false,
+      },
+    })
+
     todoNameRef.current.value = null
   }
 
@@ -31,7 +40,7 @@ function TodoListForm() {
         <button
           className='btn create'
           aria-label='create new task'
-          onClick={handleAddTodo}
+          onClick={addTodo}
         >
           +
         </button>

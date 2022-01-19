@@ -2,8 +2,24 @@ import { useContext } from "react"
 import TodoContext from "../../context/TodoContext"
 
 function TodoListFooterBtns() {
-  const { clearTodos, deleteCategory, todosComplete, categoryId } =
+  const { todosComplete, categoryId, dispatch, ACTIONS } =
     useContext(TodoContext)
+
+    const clearTodos = (getCategoryId) => {
+      console.log("[clearTodos]", getCategoryId)
+      dispatch({
+        type: ACTIONS.CLEAR_TODOS,
+        payload: getCategoryId,
+      })
+    }
+
+    const deleteCategory = (id) => {
+      dispatch({
+        type: ACTIONS.DELETE_CATEGORY,
+        payload: id,
+      })
+    }
+    
 
   return (
     <div className='delete-stuff'>

@@ -10,7 +10,8 @@ function ListsContainer() {
     categories,
     editCategories,
     toggleEditCategories,
-    addCategory
+    dispatch,
+    ACTIONS
   } = useContext(TodoContext)
 
   return (
@@ -28,15 +29,13 @@ function ListsContainer() {
           <ul className='task-list'>
             <CategoryList
               categories={categories}
-              categoryId={categoryId}
-              editCategories={editCategories}
             />
           </ul>
           {/* /dynamic population */}
         </>
       ) : null}
 
-      <Form addCategory={addCategory} />
+      <Form dispatch={dispatch} ACTIONS={ACTIONS} />
     </div>
   )
 }

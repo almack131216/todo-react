@@ -2,10 +2,15 @@ import {useContext} from "react"
 import TodoContext from "./context/TodoContext"
 
 export default function Todo({ todo }) {
-  const {toggleTodo} = useContext(TodoContext)
-  function handleToggleTodo(id) {
+  const {dispatch, ACTIONS} = useContext(TodoContext)
+  function toggleTodo(id) {
     console.log("[ToggleTodo]")
-    toggleTodo(id)    
+
+      dispatch({
+        type: ACTIONS.TOGGLE_TODO,
+        payload: id
+      })
+    
   }
 
   return (
@@ -14,7 +19,7 @@ export default function Todo({ todo }) {
         type='checkbox'
         id={todo.id}
         checked={todo.complete}
-        onChange={() => handleToggleTodo(todo.id)}
+        onChange={() => toggleTodo(todo.id)}
       />
       <label htmlFor={todo.id}>
         <span className='custom-checkbox'></span>
