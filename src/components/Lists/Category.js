@@ -43,7 +43,7 @@ export default function Category({ category }) {
 
   const isActiveClass = categoryId === category.id ? " active-list" : null
   return (
-    <li className={`list-name ${isActiveClass}`}>
+    <div className={`${isActiveClass}`}>
       {editCategories ? (
         <span className='input'>
           <input
@@ -72,6 +72,6 @@ export default function Category({ category }) {
           {category.name}
         </span>
       )}
-    </li>
+    </div>
   )
 }

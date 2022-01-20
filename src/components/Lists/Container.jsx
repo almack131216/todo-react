@@ -8,6 +8,7 @@ function ListsContainer() {
   const {
     categories,
     editCategories,
+    cxSetCategories,
     dispatch,
     ACTIONS
   } = useContext(TodoContext)
@@ -33,11 +34,12 @@ function ListsContainer() {
       {categories.length ? (
         <>
           {/* dynamic population */}
-          <ul className='task-list'>
+          {/* <ul className='task-list'> */}
             <CategoryList
               categories={categories}
+              cxSetCategories={cxSetCategories}
             />
-          </ul>
+          {/* </ul> */}
           {/* /dynamic population */}
         </>
       ) : null}

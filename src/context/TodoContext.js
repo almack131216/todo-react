@@ -32,7 +32,7 @@ export const TodoProvider = ({ children }) => {
       localStorage.getItem(LOCAL_STORAGE_KEY_CATS)
     )
     if (storedCategories) {
-      setCategories(storedCategories)
+      cxSetCategories(storedCategories)
       console.log("[CX]---[useEffect] categories: ", categories)
     }
 
@@ -87,15 +87,7 @@ export const TodoProvider = ({ children }) => {
       payload: getCategoryArr,
     })
   }
-
-  const setCategories = (getCategories) => {
-    console.log(getCategories)
-    dispatch({
-      type: ACTIONS.SET_CATEGORIES,
-      payload: { categories: getCategories },
-    })
-  }
-
+  
   const cxSetTodos = (getTodos) => {
     console.log("[CX]---[cxSetTodos]", getTodos)
     dispatch({
@@ -103,6 +95,16 @@ export const TodoProvider = ({ children }) => {
       payload: getTodos,
     })
   }
+
+  const cxSetCategories = (getCategories) => {
+    console.log("[CX]---[cxSetCategories]", getCategories)
+    console.log(getCategories)
+    dispatch({
+      type: ACTIONS.SET_CATEGORIES,
+      payload: getCategories,
+    })
+  }
+
 
   function updateToDoList(categoryId) {
     console.log("[CX]---[updateToDoList] categoryId: ", categoryId, categories)
@@ -135,6 +137,7 @@ export const TodoProvider = ({ children }) => {
         dispatch,
         ACTIONS,
         cxSetTodos,
+        cxSetCategories,
         cxDeleteCategory,
       }}
     >

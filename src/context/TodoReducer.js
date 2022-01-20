@@ -71,7 +71,7 @@ const todoReducer = (state, action) => {
       }
 
     case ACTIONS.SET_CATEGORIES:
-      return { ...state, categories: action.payload.categories }
+      return { ...state, categories: action.payload }
 
     case ACTIONS.SET_CATEGORY_ID:
       return { ...state, categoryId: action.payload }

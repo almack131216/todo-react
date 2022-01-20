@@ -193,6 +193,16 @@ form {
   /* min-height:35px; */
 }
 
+.tasks ul {
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.tasks ul li {
+  border-bottom: 1px dotted #ccc;
+}
+
 .new-task-creator .create {
   color: var(--clr-primary);
 }
@@ -212,18 +222,18 @@ form {
 
 .task {
   position: relative;
-  margin-bottom: 1.25em;
+  padding: 0.5em 0;
 }
 
 .task::after {
-  content: "";
+  /* content: "";
   position: absolute;
   right: 0;
   left: 0;
-  bottom: -0.5em;
+  bottom: -0.1em;
   height: 1px;
   background: currentColor;
-  opacity: 0.1;
+  opacity: 0.1; */
 }
 
 .custom-checkbox {
